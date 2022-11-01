@@ -1,7 +1,8 @@
 const Sequelize = require("sequelize")
+require("dotenv").config();
 
-const sequelize = new Sequelize("quiz_app", "root", "1234", {
-    dialect: "mariadb",
+const sequelize = new Sequelize("quiz_app", process.env.USER, process.env.PASSWORD, {
+    dialect: process.env.DIALECT,
   })
   
   sequelize
