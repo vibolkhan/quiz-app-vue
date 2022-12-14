@@ -7,7 +7,16 @@
     >
       <template v-slot:activator="{ on, attrs }">
         <v-icon v-if="type=='edit'" v-bind="attrs" v-on="on" @click="showDataInForm" color="accent">mdi-pencil</v-icon>
-        <v-btn v-if="type=='create'" v-bind="attrs" v-on="on" @click="showQuestionForm(true)" color="primary" class="my-5 mx-3">Create a quiz</v-btn>
+        <v-btn 
+          icon 
+          class="white"
+          v-if="type=='create'" 
+          v-bind="attrs"
+          v-on="on" 
+          @click="showQuestionForm(true)"  
+        >
+          <v-icon class="blue--text">mdi-plus</v-icon>
+        </v-btn>
       </template>
       <v-card>
         <v-card-title>
@@ -19,15 +28,30 @@
             ref="form"
             v-model="valid"
           >
-            <v-col cols="12">
-              <v-text-field
-                label="Quiz title"
-                placeholder="Quiz title"
-                :rules="rules.title"
-                required
-                v-model="title"
-              ></v-text-field>
-            </v-col>
+          <v-col cols="12">
+            <v-img
+              :src="'http://localhost:3000/uploads/'+profile" 
+            ></v-img>
+            <input
+              type="file"
+              label="Quiz title"
+              placeholder="Quiz title"
+              @change="onFileSelected"
+              required
+              class="mt-5"
+              id="profile"
+            />
+          </v-col>
+          <v-col cols="12">
+            <v-text-field
+              label="Quiz title"
+              placeholder="Quiz title"
+              :rules="rules.title"
+              required
+              v-model="title"
+              class="text-capitalize"
+            ></v-text-field>
+          </v-col>
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -64,7 +88,7 @@
 
 <script>
 import { mapActions } from 'vuex';
-
+import axios from 'axios'
   export default {
     props: {
       type: String,
@@ -77,26 +101,44 @@ import { mapActions } from 'vuex';
         title: [val => (val || '').length > 0 || 'Quiz title is required'],
       },
       title: '',
-      id: null
+      id: null,
+      profile: null
     }),
 
     methods: {
       ...mapActions(['editQuiz', 'createQuiz', 'deleteQuiz']),
       clearForm() {
         this.title = null
+        this.profile = null
         this.dialog = false
       },
 
       addQuiz() {
         if (this.$refs.form.validate()) {
           this.createQuiz({
-            title: this.title
+            profile: this.profile,
+            title: this.title,
+            userId: sessionStorage.getItem('userId')
           })
           this.clearForm()
         }
       },
 
+      upload(image) {
+        const fd = new FormData()
+        fd.append('profile', image)
+        axios.post('http://localhost:3000/image', fd).then((res)=> {
+          this.profile = res.data
+          console.log(res.data);
+        })
+      },
+
+      async onFileSelected(event){
+        this.upload(event.target.files[0])
+      },
+
       showDataInForm() {
+        this.profile = this.data.profile
         this.id = this.data.id
         this.title = this.data.title
       },
@@ -104,6 +146,7 @@ import { mapActions } from 'vuex';
       updateQuiz() {
         this.editQuiz(
           {
+            profile: this.profile,
             id: this.id,
             title: this.title,
           }

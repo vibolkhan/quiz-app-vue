@@ -41,11 +41,12 @@ const routes = [
     },
   },
   {
-    path: '/play',
+    path: '/play/:quizId',
     name: 'play',
     component: () => import('../components/play-quiz.vue'),
     meta:{
       isAuthentication:true,
+      hideNavbar: true,
     },
   },
   {

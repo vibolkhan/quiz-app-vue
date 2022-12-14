@@ -1,12 +1,8 @@
 <template>
   <v-container>
-    <div class="d-flex justify-space-between mt-5 mb-2">
-      <h3 class="font-weight-medium">Configurer une année fiscale</h3>
-      <v-icon>mdi-information-outline</v-icon>
-    </div>
-    <div class="d-flex items-center">
-      <QuestionForm type='create'/>
-      <v-btn class="mt-2 ml-3" color="primary" @click="playQuiz">Play Quiz</v-btn>
+    <div class="d-flex justify-space-between mt-5 mb-2 align-center">
+      <h3 class="font-weight-medium"><v-btn icon class="white mr-3" @click="$router.push('/quiz')"><v-icon>mdi-arrow-left</v-icon></v-btn>My Questions</h3>
+      <QuestionForm type='create' class="mr-1"/>
     </div>
     <v-data-table :headers="headers" :items="allQuestion" :items-per-page="5" item-key="name" class="elevation-1"
       :footer-props="{
@@ -37,7 +33,7 @@
 <script>
 import QuestionForm from './question-model.vue'
 import { mapGetters, mapActions } from "vuex";
-import router from '@/router';
+
 export default {
   data() {
     return {
@@ -51,11 +47,8 @@ export default {
   },
   methods: {
     ...mapActions(["fetchQuestion", "deleteQuestion"]),
-    playQuiz() {
-      router.push('/play')
-    }
   },
-  computed: mapGetters(["allQuestion"]),
+computed: mapGetters(["allQuestion"]),
   mounted() {
     this.fetchQuestion()
   },

@@ -21,6 +21,4 @@ user.beforeCreate((user, options) => {
     });
 });
 
-user.sync()
-
 module.exports = user

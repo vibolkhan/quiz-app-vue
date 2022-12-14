@@ -1,12 +1,12 @@
 const express = require('express')
 const router = express.Router()
-const userTable = require('../models/user-model')
+const userTable = require('../models/associations').user
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const vertifyToken = require('./auth')
 
 // create user
-router.post("/", vertifyToken, async (req, res) => {
+router.post("/", async (req, res) => {
   await userTable.create(req.body)
   res.send('data posted')
 })
@@ -33,7 +33,7 @@ router.post( '/login', async (req, res) => {
       if (await verifyPassword(req.body.password,user)) {
         const token = jwt.sign({
           data: 'foobar'
-        }, 'secret', { expiresIn: '24h' });
+        }, 'secret', { expiresIn: '3h' });
 
         const loginView = {
           user,

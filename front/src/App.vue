@@ -1,7 +1,9 @@
 <template>
   <v-app id="inspire">
     <v-navigation-drawer v-model="drawer" app color="primary" v-if="$route.meta.hideNavbar != true"> 
-      <v-img src="./assets/logo.png" class="my-5" contain height="50" />
+      <div class="d-flex justify-center pa-3 white--text text-h6">
+        SAM QUIZ
+      </div>
       <v-divider></v-divider>
 
       <v-list dense nav >

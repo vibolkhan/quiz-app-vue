@@ -4,6 +4,7 @@ import question from './modules/question'
 import quiz from './modules/quiz'
 import history from './modules/history'
 import login from './modules/login'
+import play from './modules/play'
 
 // Load Vuex
 Vue.use(Vuex);
@@ -14,6 +15,7 @@ export default new Vuex.Store({
     question,
     quiz,
     history,
-    login
+    login,
+    play
   }
 });

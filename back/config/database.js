@@ -12,4 +12,4 @@ const sequelize = new Sequelize("quiz_app", process.env.USER, process.env.PASSWO
     })
     .catch((err) => console.log(err, "this has a error"))
 
-    module.exports = sequelize
+module.exports = sequelize

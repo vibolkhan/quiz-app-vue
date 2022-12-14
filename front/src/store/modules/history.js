@@ -17,7 +17,7 @@ const getters = {
 
 const actions = {
   async fetchHistory({ commit }) {
-    const id = sessionStorage.getItem('quiz_id')
+    const id = sessionStorage.getItem('quizId')
     const response = await axios.get(`${URL}/${id}`, header);
     commit('setHistories', response.data.slice(-1));
   },

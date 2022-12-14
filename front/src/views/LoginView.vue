@@ -19,11 +19,11 @@
                     v-model="valid"
                     lazy-validation
                 >
-                
                     <v-text-field
                         v-model="email"
                         :rules="emailRules"
                         label="E-mail"
+                        hint="Enter you email"
                         required
                     ></v-text-field>
                 
@@ -32,16 +32,16 @@
                         :append-icon="isShow ? 'mdi-eye' : 'mdi-eye-off'"
                         :rules="[rules.required, rules.min]"
                         :type="isShow ? 'text' : 'password'"
-                        label="Not visible"
-                        hint="At least 8 characters"
+                        label="Password"
+                        hint="Enter you password"
                         class="input-group--focused"
                         @click:append="isShow = !isShow"
                     ></v-text-field>
-
+                    <small class="error--text" v-if="islogin">invalid email or password</small>
                     <v-btn
                         width="100%"
                         color="accent"
-                        class="px-5 mt-5o"
+                        class="px-5 mt-5"
                         @click="clickLogin()"
                     >
                         Login
@@ -76,6 +76,9 @@ import { mapActions } from "vuex";
             ...mapActions(["login"]),
             clickLogin() {
                 this.login({email: this.email, password: this.password})
+                setTimeout(() => {
+                    this.islogin = true
+                }, 500);
             }
         },
 
@@ -86,7 +89,8 @@ import { mapActions } from "vuex";
                 } else {
                     router.push('/')
                     sessionStorage.removeItem('token')
-                    sessionStorage.removeItem('quiz_id')
+                    sessionStorage.removeItem('quizId')
+                    sessionStorage.removeItem('userId')
                 }
             } else {
                 router.push('/')

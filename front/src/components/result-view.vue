@@ -22,38 +22,38 @@
                 class="mx-auto mt-3 elevation-5"
                 
             >    
-                <v-alert   
-                    dense
-                    text
-                    :type="allHistory[0].answers[i] == 'Null' ? 'error' : ''"
-                    :icon="allHistory[0].answers[i] == 'Null' ? 'mdi-alert-circle-outline' : ''"
-                >
-                    <p class="pa-1" v-if="allHistory[0].answers[i] == 'Null'">You are not complete this question!</p>
-                    <v-card-text 
-                        class="text--primary d-flex"
+            <v-card-text>
+                <p class="pa-1 error--text " v-if="allHistory[0].answers[i] == 'Null'"> <v-icon color="error">mdi-alert-outline</v-icon> You are not complete this question!</p>
+                <div class="text-h5" :class="{'error--text': allHistory[0].answers[i] == 'Null'}">{{i+1}}. {{question.question}}</div>
+                <v-spacer vertical></v-spacer>
+            </v-card-text>
+                <div class="text-center d-flex justify-center">
+                    <v-img 
+                        :src="'http://localhost:3000/uploads/'+question.image" 
+                        max-width="300px"           
+                        max-height="300px"         
+                    ></v-img>
+                </div>
+                <v-divider class="mb-3"></v-divider>
+                <v-card-body>
+                    <v-list-item
+                        v-for="(item, index) in question.answer"
+                        :key="index"
+                        :value="index"
                     >
-                        <div class="text-h5">{{i+1}}. {{question.question}}</div>
-                        <v-spacer vertical></v-spacer>
-                    </v-card-text>
-                    <v-divider class="mb-3"></v-divider>
-                    <v-card-body>
-                        <v-list-item
-                            v-for="(item, index) in question.answer"
-                            :key="index"
-                            :value="index"
-                        >
-                            <v-alert text class="black--text" :class="{ 'red--text': allHistory[0].answers && allHistory[0].answers[i] == index, 'green--text': item.isCorrect}" width="100%">{{item.answerContent}}</v-alert>
-                        </v-list-item>
-                    </v-card-body>
-                </v-alert>
+                        <v-alert text class="black--text" :class="{ 'red--text': allHistory[0].answers && allHistory[0].answers[i] == index, 'green--text': item.isCorrect}" width="100%">{{item.answerContent}}</v-alert>
+                    </v-list-item>
+                </v-card-body>
             </v-card>
         </v-col>
-        <v-col cols="6" class="text-center"><v-icon class="blue--text">mdi-copyright</v-icon> vibol khan <a href="question" class="blue--text"> back</a></v-col>
+        <v-col cols="6" class="text-center"><v-icon class="blue--text">mdi-copyright</v-icon> vibol khan <a href="quiz" class="blue--text"> back</a></v-col>
     </v-row>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import * as easings from 'vuetify/lib/services/goto/easing-patterns'
+import Vuetify from 'vuetify'
 export default {
     name: 'result-page',
     data() {
@@ -65,8 +65,16 @@ export default {
             ],
             index: 0,
             selectedAnswer: null,
-            score: 0,
-            showResult: false
+            showResult: true,
+            type: 'number',
+            number: 9999,
+            selector: '#scroll-with-options',
+            selected: 'Button',
+            elements: ['Button', 'Radio group'],
+            duration: 300,
+            offset: 0,
+            easing: 'easeInOutCubic',
+            easings: Object.keys(easings),
         }
     },
 
@@ -78,12 +86,31 @@ export default {
         ...mapActions(["fetchQuestion", "fetchHistory"]),
     },
 
-    computed: mapGetters(["allQuestion", "allHistory"]),
+    computed: {
+        ...mapGetters(["allQuestion", "allHistory"]),
+        target () {
+        const value = this[this.type]
+        if (!isNaN(value)) return Number(value)
+        else return value
+      },
+      options () {
+        return {
+          duration: this.duration,
+          offset: this.offset,
+          easing: this.easing,
+        }
+      },
+      element () {
+        if (this.selected === 'Button') return this.$refs.button
+        else if (this.selected === 'Radio group') return this.$refs.radio
+        else return null
+      },
+    },
 
     mounted() {
         this.fetchQuestion()
         this.fetchHistory()
-        this.countScore()
+        Vuetify.goTo(this.target, this.options)
     },
 }
 </script>

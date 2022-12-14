@@ -9,13 +9,15 @@ const state = {
 
 const getters = {
   allUser: state => state.users
-};
+}
 
 const actions = {
   async login({ commit }, body) {
-    const response = await axios.post(URL, body);
+    const response = await axios.post(URL, body)
     sessionStorage.setItem('token', response.data.token)
-    commit('login', response);
+    console.log(response.data.user)
+    sessionStorage.setItem('userId', response.data.user[0].id)
+    commit('login', response)
 },
 }
 
@@ -32,4 +34,4 @@ export default {
   getters,
   actions,
   mutations,
-};
+}

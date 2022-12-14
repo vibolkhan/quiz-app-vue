@@ -7,7 +7,15 @@
     >
       <template v-slot:activator="{ on, attrs }">
         <v-icon v-if="type=='edit'" v-bind="attrs" v-on="on" @click="showDataInForm" color="accent">mdi-pencil</v-icon>
-        <v-btn v-if="type=='create'" v-bind="attrs" v-on="on" @click="showQuestionForm(true)" color="primary" class="my-5 mx-3">Create a question</v-btn>
+        <v-btn 
+          v-if="type=='create'" 
+          v-bind="attrs" v-on="on" 
+          @click="showQuestionForm(true)" 
+          icon 
+          class="white"
+        >
+          <v-icon class="blue--text">mdi-plus</v-icon>
+        </v-btn>
       </template>
       <v-card>
         <v-card-title>
@@ -28,6 +36,12 @@
                 required
                 v-model="question"
               ></v-text-field>
+            </v-col>
+            <v-col cols="6" >
+              <v-img width="50%" :src="'http://localhost:3000/uploads/'+imagePath"></v-img>
+            </v-col>
+            <v-col cols="12">
+              <input type="file" id="image" @change="onFileSelected"/> 
             </v-col>
             <v-col cols="12">
               <v-radio-group 
@@ -115,6 +129,7 @@
 </template>
 
 <script>
+import axios from 'axios'
   import { mapActions } from "vuex";
   export default {
     props: {
@@ -134,23 +149,38 @@
       answer2: '',
       answer3: '',
       answer4: '',
-      id: null
+      id: null,
+      imagePath: null,
     }),
 
     methods: {
       ...mapActions(["createQuestion", 'editQuestion', 'fetchQuestions']),
 
+      upload(image) {
+        const fd = new FormData()
+        fd.append('profile', image)
+        axios.post('http://localhost:3000/image', fd).then((res)=> {
+          this.imagePath = res.data
+          console.log(res.data);
+        })
+      },
+
+      async onFileSelected(event){
+        this.upload(event.target.files[0])
+      },
+
       addQuestion() {
-        if (sessionStorage.getItem('quiz_id') && this.$refs.form.validate()) {
+        if (sessionStorage.getItem('quizId') && this.$refs.form.validate()) {
           this.createQuestion({
-            quiz_id: sessionStorage.getItem('quiz_id'),
+            quizId: sessionStorage.getItem('quizId'),
             question: this.question,
             answer: [
               {answerContent: this.answer1, isCorrect: this.radios=='answer1'},
               {answerContent: this.answer2, isCorrect: this.radios=='answer2'},
               {answerContent: this.answer3, isCorrect: this.radios=='answer3'},
               {answerContent: this.answer4, isCorrect: this.radios=='answer4'},
-            ]
+            ],
+            image: this.imagePath
           })
           this.clearForm()
         }
@@ -161,6 +191,7 @@
           this.editQuestion({
             id: this.id,
             question: this.question,
+            image: this.imagePath,
             answer: [
               {answerContent: this.answer1, isCorrect: this.radios=='answer1'},
               {answerContent: this.answer2, isCorrect: this.radios=='answer2'},
@@ -174,6 +205,7 @@
 
       showDataInForm() {
         this.id = this.data.id
+        this.imagePath = this.data.image
         this.question= this.data.question
         const answers = this.data.answer
         this.answer1 = answers[0].answerContent
@@ -197,6 +229,7 @@
         this.answer4 = ''
         this.radios = ''
         this.dialog = false
+        this.imagePath = null
       }
     },
   }

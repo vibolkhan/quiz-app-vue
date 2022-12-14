@@ -8,14 +8,12 @@ const quiz_table = require('../config/database').define(
         // allowNull: false
       },
       profile: {
-        type: Sequelize.BLOB("long"),
+        type: Sequelize.STRING,
         // allowNull: false
       },
     },
     { tableName: "quiz" }
   )
-  
 
-quiz_table.sync()
 
 module.exports = quiz_table

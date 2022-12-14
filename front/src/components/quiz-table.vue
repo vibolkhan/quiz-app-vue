@@ -1,11 +1,11 @@
 <template>
     <v-container>
       <div class="d-flex justify-space-between mt-5 mb-2">
-        <h3 class="font-weight-medium">Configurer une année fiscale</h3>
-        <v-icon>mdi-information-outline</v-icon>
+        <h3 class="font-weight-medium">My Quizzes</h3>
+
+        <QuestionForm type='create' class="mr-1"/>
       </div>
-      <QuestionForm type='create'/>
-      <v-data-table :headers="headers" :items="allQuiz" :items-per-page="5" item-key="name" class="elevation-1"
+      <v-data-table :headers="headers" :items="myQuizzes" :items-per-page="5" item-key="name" class="elevation-1"
         :footer-props="{
           showFirstLastPage: true,
           firstIcon: 'mdi-arrow-collapse-left',
@@ -29,11 +29,39 @@
               <v-avatar @click="getQuizId(data.item.id)">
                 <img
                   class="pa-1"
-                  src="https://cdn.vuetifyjs.com/images/john.jpg"
-                  alt="John"
+                  :src="'http://localhost:3000/uploads/'+data.item.profile"
                 >
               </v-avatar>
             </v-btn>
+          </slot>
+        </template>
+      </v-data-table>
+      <div class="d-flex justify-space-between mt-9 mb-2">
+        <h3 class="font-weight-medium">All Quizzes</h3>
+      </div>
+      <v-data-table :headers="headers" :items="allQuiz" :items-per-page="5" item-key="name" class="elevation-1"
+        :footer-props="{
+          showFirstLastPage: true,
+          firstIcon: 'mdi-arrow-collapse-left',
+          lastIcon: 'mdi-arrow-collapse-right',
+          prevIcon: 'mdi-minus',
+          nextIcon: 'mdi-plus'
+        }">
+        <template v-slot:[`item.actions`]="data">
+          <slot name="data" :data="{ data }">
+            <v-btn class="blue white--text" @click="playQuiz(data.item.id)">
+              Play
+            </v-btn>
+          </slot>
+        </template>
+      <template v-slot:[`item.profile`]="data">
+          <slot name="data" :data="{data}">
+            <v-avatar>
+              <img
+                class="pa-1"
+                :src="'http://localhost:3000/uploads/'+data.item.profile"
+              >
+            </v-avatar>
           </slot>
         </template>
       </v-data-table>
@@ -55,17 +83,22 @@ data() {
   }
 },
 methods: {
-  ...mapActions(["fetchQuizzes", 'deleteQuiz']),
+  ...mapActions(['fetchQuizzes', 'deleteQuiz', 'fetchMyQuizzes']),
   getQuizId(id) {
-    sessionStorage.setItem('quiz_id', id)
+    sessionStorage.setItem('quizId', id)
     router.push('/question')
-  }
+  },
+  playQuiz(id) {
+    sessionStorage.setItem('quizId', id)
+    router.push(`/play/${id}`)
+  },
 },
 
-computed: mapGetters(["allQuiz"]),
+computed: mapGetters(["allQuiz", 'myQuizzes']),
 
 mounted() {
   this.fetchQuizzes()
+  this.fetchMyQuizzes()
 },
 
 components: {

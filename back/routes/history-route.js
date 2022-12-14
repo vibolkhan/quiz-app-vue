@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const historyTable = require('../models/history-model')
+const historyTable = require('../models/associations').history
 const vertifyToken = require('./auth')
 
 router.get("/", vertifyToken, async (req, res) => {
@@ -31,7 +31,7 @@ router.put("/:id", vertifyToken, async (req, res) => {
 
 router.get("/:id", vertifyToken, async (req, res) => {
   const alldata = await historyTable.findAll({
-    where: {quiz_id: req.params.id}
+    where: {quizId: req.params.id}
   })
   res.json(alldata)
 })
