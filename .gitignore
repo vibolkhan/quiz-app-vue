@@ -22,15 +22,6 @@
 /back/node_modules
 /back/package-lock.json
 
-# Back : Laravel Hot
-/back/public/hot
-
-# Back : Storage
-/back/public/storage
-
-# Back : Storage key
-/back/storage/*.key
-
 # Back : Enviroment Variable file
 /back/.env
 
