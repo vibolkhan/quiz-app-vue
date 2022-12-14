@@ -1,0 +1,47 @@
+/front/.DS_Store
+
+# NPM package repo
+/front/node_modules
+/front/package-lock.json
+
+# Generated distribution
+/front/dist
+
+# Local env files
+/front/.env.local
+/front/.env.*.local
+
+# Log files
+/front/npm-debug.log*
+ 
+# Editor configuration
+/front/.vscode
+
+
+# BACK : NPM package repo
+/back/node_modules
+/back/package-lock.json
+
+# Back : Laravel Hot
+/back/public/hot
+
+# Back : Storage
+/back/public/storage
+
+# Back : Storage key
+/back/storage/*.key
+
+# Back : Enviroment Variable file
+/back/.env
+
+# Back : Enviroment Variable file backup
+/back/.env.backup
+
+# Back : Yarn log
+/back/yarn-error.log
+
+# Back : idea
+/back/.idea
+
+# Back : vscode 
+/back/.vscode
